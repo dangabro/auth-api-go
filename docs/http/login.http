@@ -1,0 +1,105 @@
+### Send POST request with json body
+POST http://localhost:3001/login
+Content-Type: application/json
+
+{
+  "login": "id1",
+  "password": "info12322"
+}
+
+#### check token
+
+POST http://localhost:3001/checkToken
+Content-Type: application/json
+
+{
+  "token": "e7606524-02f8-44b7-b069-7b6722719abc"
+}
+
+
+### get access rights list
+GET http://localhost:3001/getAccessRights
+Authorization: bearer ab005859-b24b-4783-9b6b-d175df0af0e6
+
+####
+POST http://localhost:3001/expireTokens
+Authorization: bearer ec8a84fc-6858-4cb1-82aa-f3df0718fa41
+Content-Type: application/json
+
+{
+  "ids": ["c60f481e-3fb9-47cd-b955-b66ec0bca46b",
+    "dcac2513-a91c-4a46-9ce5-e4cd4a37f7cd"
+  ]
+}
+
+###
+POST http://localhost:3001/changePassword
+Authorization: bearer fea6dfa2-aa65-46b5-8a98-2d3246851709
+Content-Type: application/json
+
+{
+  "id": "id3",
+  "password": "info123"
+}
+
+###
+POST http://localhost:3001/loginNoToken
+Content-Type: application/json
+
+{
+  "login": "id3login",
+  "password": "info123"
+}
+
+###
+POST http://localhost:3001/logout
+Authorization: bearer fea6dfa2-aa65-46b5-8a98-2d3246851709
+
+###
+POST http://localhost:3001/extendToken
+Authorization: bearer fea6dfa2-aa65-46b5-8a98-2d3246851709
+Content-Type: application/json
+
+{
+  "token": "5ebb14d8-8368-489f-bf11-478020bac100"
+}
+
+###
+POST http://localhost:3001/getUserTokens
+Authorization: bearer a42e0502-ca48-4918-8b62-9bbcced73639
+Content-Type: application/json
+
+{
+  "id": "id1"
+}
+
+###
+POST http://localhost:3001/searchUsers
+Authorization: bearer 3a3533a4-c4fe-418a-9b64-cce44eae6ee7
+Content-Type: application/json
+
+{
+  "searchString": "aniel"
+}
+
+###
+POST http://localhost:3001/updateUser
+Authorization: bearer 372bac8a-b453-4b32-b3d9-6b5563b12e42
+Content-Type: application/json
+
+{
+    "id":"second",
+    "name": "second modified",
+    "login": "modified"
+}
+
+###
+POST http://localhost:3001/changeUserRights
+Authorization: bearer 372bac8a-b453-4b32-b3d9-6b5563b12e42
+Content-Type: application/json
+
+{
+  "id": "second",
+  "rights": ["test_right"]
+}
+

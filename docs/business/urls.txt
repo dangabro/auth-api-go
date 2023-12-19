@@ -1,0 +1,15 @@
+done app.get('//?getAccessRights', new GetAccessRightsController().getAccessRights);
+done app.post("//?login", new LoginController().login);
+done app.post('//?checkToken', new CheckTokenController().checkToken);
+done app.post('//?expireTokens', new ExpireTokensController().expireTokens);
+done app.post('//?changePassword', new ChangePasswordController().changePassword);
+app.post('//?loginNoToken', new LoginNoTokenController().loginNoToken);
+app.post('//?logout', new LogoutController().logoutController);
+app.post("//?extendToken", new ExtendTokenController().extendToken);
+app.get("//?checkResources", new CheckResourcesController().checkResources);
+app.post("//?getUserTokens", new GetUserTokensController().getUserTokens);
+app.post("//?searchUsers", new SearchUsersController().searchUsers);
+app.post('//?updateUser', new UpdateUserController().updateUser);
+
+app.post("//?changeUserRights", new ChangeUserRightsController().changeUserRights);
+

@@ -1,0 +1,14 @@
+{
+  "port": "0.0.0.0:3001",
+  "db": {
+    "database" : "auth",
+    "user": "auth",
+    "password": "fill here",
+    "machine": "localhost",
+    "port": 3306,
+    "poolSize" : 10
+  },
+  "tokenDurationMs": 96000000,
+  "cors" : true,
+  "logLevel" : "debug"
+}

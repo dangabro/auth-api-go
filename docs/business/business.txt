@@ -1,0 +1,232 @@
+test hash for info123 is this one 7b9ecaa5694e9ec74ecc34c94c52a57e
+
+
+#### various
+
+admin right is this one: auth_admin
+connected right is this one: auth_connect
+
+those are some values
+export interface TokenData {
+    token: string;
+    expired: boolean;
+}
+
+export interface UserData {
+    id: string;
+    name: string;
+    login: string;
+}
+
+export interface UserTokenData {
+    token: TokenData;
+    user: UserData;
+    rights: string[]
+}
+
+
+
+### check logged in
+get the token
+search in the session table the entry
+see if it is expired
+see if has auth_connect so far so good
+
+### check admin
+- check login (already done perhaps)
+- check it has the right auth_admin as well
+
+### change password
+app.post('//?changePassword', new ChangePasswordController().changePassword);
+check logged in
+get login user id
+get password data from the request {id, password} where id is user id
+if id is not login user id check it is an admin
+change the password storing it in md5
+return success data
+
+input export interface ChangePasswordData {
+          id: string; // the user id that has the password changed
+          password: string; // the password to be changed
+      }
+
+
+### change user rights
+app.post("//?changeUserRights", new ChangeUserRightsController().changeUserRights);
+payload
+interface ChangeUserRightData {
+    id: string; // this is the user id
+    rights: string[]; // the rights for that user
+}
+returns {success: true} or other error
+
+- check logged in
+- check admin. Any user, only admin can change
+- is not removing auth_connect and auth_admin
+- check correct user
+- then update rights in the database
+
+### check resources controller
+app.get("//?checkResources", new CheckResourcesController().checkResources);
+- returns html not json
+- contains status about the config data
+
+### check token
+app.post('//?checkToken', new CheckTokenController().checkToken);
+input is this
+export interface SimpleToken {
+    token: string;
+}
+
+return
+export interface CheckTokenData {
+    id: string;
+    name: string;
+    login: string;
+    token: string;
+    rights: string[];
+}
+
+throw exceptions if the token is either expire or not valid
+
+### expire tokens
+app.post('//?expireTokens', new ExpireTokensController().expireTokens);
+the request is this
+export interface IdsData {
+    ids: string[];
+}
+
+- the ids are token value
+- check there is at least one token there in the list
+- check logged in
+- if one token does not exit, then throw error; all tokens in the request must exist
+- see to whom the tokens belong to
+- if they belong to other people, then check administrator
+
+
+the response is {success: true} if this is the case;
+
+### extend token
+app.post("//?extendToken", new ExtendTokenController().extendToken);
+payload {token: some token data}
+returns {success: true}
+- check login
+- check token exists
+- check token is not expired already
+- check token belongs to user
+- if not check for admin
+- extend token by adding the token milisec to the current date and add it to the database
+
+### get access rights
+app.get('//?getAccessRights', new GetAccessRightsController().getAccessRights);
+payload nothing
+return {rights: arr} where arr array of RightData below
+export interface RightData {
+    cd: string;
+    name: string;
+}
+
+- check logged in
+- any login will do well
+
+### get user token
+app.post("//?getUserTokens", new GetUserTokensController().getUserTokens);
+request export interface IdData {
+    id: string;
+}
+
+response {tokens: tokenList} token list is array of
+export interface  CompleteTokenData {
+    id: string;
+    token: string;
+    expired: boolean;
+    expireDate: Date | null;
+    createdDate: Date;
+}
+
+- check login
+- get id
+- if id different than logged in id then check admin
+- then go and get the tokens for that user ordered by the date
+
+### login
+app.post("//?login", new LoginController().login);
+request
+export interface LoginData {
+    login: string;
+    password: string;
+}
+
+response:
+        const response: LoginResponse = {
+            id: user.id,
+            login: user.login,
+            name: user.name,
+            rights: user.rights,
+            token: token
+        };
+
+
+- check login
+- check password
+- cut a token
+- return the construct above with the token and everything
+
+### login no token
+app.post('//?loginNoToken', new LoginNoTokenController().loginNoToken);
+merely returns the user and the righs after checking for login and password
+without cutting a token
+request
+export interface LoginData {
+    login: string;
+    password: string;
+}
+
+response
+const user: CompleteUserData = {
+    id: line.user_id,
+    login: line.login,
+    name: line.user_name,
+    rights: []
+};
+
+### logout
+app.post('//?logout', new LogoutController().logoutController);
+check logged in
+take the token and cancel it; this is login token so there is no check whether admin or other stuff
+return {success data}
+
+### search users
+app.post("//?searchUsers", new SearchUsersController().searchUsers);
+request
+export interface SearchUserData {
+    searchString: string;
+}
+response
+{users: CompleteUserData[]}
+where Complete user data:
+export interface UserData {
+    id: string;
+    name: string;
+    login: string;
+    rights: string[]
+}
+
+- check logged in
+- if not admin, then get current user and return it and that's it
+- if admin, search through the database for the users that are provided and proceed with the list
+
+### update user
+app.post('//?updateUser', new UpdateUserController().updateUser);
+request
+export interface UserData {
+    id: string;
+    name: string;
+    login: string;
+}
+
+response {success: true} if really success
+check logged in
+if user id different than logged in user id then check admin
+check values to be filled out etc
+then update

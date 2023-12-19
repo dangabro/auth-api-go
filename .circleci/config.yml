@@ -1,0 +1,22 @@
+version: 2.1
+workflows:
+  starter:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - run: echo ${CIRCLE_BUILD_NUM}
+      - run: echo $(pwd)
+      - run: GOARCH=amd64 GOOS=linux CGO_ENABLED=0 docker run -v $(pwd):/alfa -w /alfa golang:1.18.4-alpine3.16 go build -o auth_service_go ./start.go
+      - run: docker build . -t 169533462518.dkr.ecr.us-east-2.amazonaws.com/auth-service-go:1.0.${CIRCLE_BUILD_NUM}
+      - run: docker image ls
+      - run: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 169533462518.dkr.ecr.us-east-2.amazonaws.com
+      - run: docker image push 169533462518.dkr.ecr.us-east-2.amazonaws.com/auth-service-go:1.0.${CIRCLE_BUILD_NUM}
